@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem; // <-- Добавлено
 
 public class PlayerShoot : MonoBehaviour
 {
@@ -15,23 +16,22 @@ public class PlayerShoot : MonoBehaviour
 
     void Update()
     {
-        // Если нажата ПКМ и кулдаун прошел
-        if (Input.GetMouseButtonDown(1) && Time.time >= nextShotTime)
+        // Безопасная проверка: если мыши нет, выходим
+        if (Mouse.current == null) return;
+
+        // Стреляем по правой кнопке мыши (новый Input System)
+        if (Mouse.current.rightButton.wasPressedThisFrame && Time.time >= nextShotTime)
         {
-            // 1. Создаем луч из камеры в точку клика
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
 
-            // 2. Вычисляем направление стрельбы
-            Vector3 shootDirection = transform.forward; // По умолчанию вперед
+            Vector3 shootDirection = transform.forward; 
             
             if (Physics.Raycast(ray, out hit))
             {
-                // Если луч попал в пол, стреляем в сторону курсора
                 shootDirection = (hit.point - transform.position).normalized;
             }
 
-            // 3. Создаем снаряд
             GameObject proj = Instantiate(projectilePrefab, transform.position + shootDirection, Quaternion.LookRotation(shootDirection));
             
             Rigidbody rb = proj.GetComponent<Rigidbody>();

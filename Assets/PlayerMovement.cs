@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem; // <-- Добавлено для нового Input System
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,9 +15,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        // Безопасная проверка: если мыши нет (например, на телефоне), выходим
+        if (Mouse.current == null) return;
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
