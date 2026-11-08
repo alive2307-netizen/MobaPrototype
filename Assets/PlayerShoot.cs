@@ -71,11 +71,17 @@ public class PlayerShoot : MonoBehaviour
         Debug.Log("Штраф! Вы не можете стрелять " + penaltyDuration + " секунд.");
     }
 
-    // Корутина для мигания экрана
+    // Корутина для мигания экрана (дважды)
     System.Collections.IEnumerator FlashScreen()
     {
-        damageFlash.SetActive(true); // Включаем красный экран
-        yield return new WaitForSeconds(0.15f); // Ждем 0.15 секунды
-        damageFlash.SetActive(false); // Выключаем
+        if (damageFlash == null) yield break;
+
+        for (int i = 0; i < 2; i++)
+        {
+            damageFlash.SetActive(true); // Включаем красный экран
+            yield return new WaitForSeconds(0.1f); // Светимся 0.1 сек
+            damageFlash.SetActive(false); // Выключаем
+            yield return new WaitForSeconds(0.05f); // Пауза 0.05 сек
+        }
     }
 }
