@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerShoot : MonoBehaviour
 {
     public GameObject projectilePrefab; 
+    public GameObject damageFlash; // Ссылка на красную картинку экрана
     public float shootForce = 1000f;
     public float cooldown = 0.3f; 
     private float nextShotTime = 0f;
@@ -41,6 +42,7 @@ public class PlayerShoot : MonoBehaviour
                 shootDirection = (hit.point - transform.position).normalized;
             }
 
+            // Создаем снаряд
             GameObject proj = Instantiate(projectilePrefab, transform.position + shootDirection, Quaternion.LookRotation(shootDirection));
             
             Rigidbody rb = proj.GetComponent<Rigidbody>();
@@ -59,6 +61,21 @@ public class PlayerShoot : MonoBehaviour
     {
         isPenalized = true;
         penaltyEndTime = Time.time + penaltyDuration;
+        
+        // Запускаем красную вспышку
+        if (damageFlash != null)
+        {
+            StartCoroutine(FlashScreen());
+        }
+
         Debug.Log("Штраф! Вы не можете стрелять " + penaltyDuration + " секунд.");
+    }
+
+    // Корутина для мигания экрана
+    System.Collections.IEnumerator FlashScreen()
+    {
+        damageFlash.SetActive(true); // Включаем красный экран
+        yield return new WaitForSeconds(0.15f); // Ждем 0.15 секунды
+        damageFlash.SetActive(false); // Выключаем
     }
 }
