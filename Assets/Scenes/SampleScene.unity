@@ -984,6 +984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a222257a9727164786315fe52b703dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wasdSpeed: 5
 --- !u!195 &794363914
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2116,6 +2117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 1731257083058775158, guid: dd76123c7806cb44f9a9035251b01168, type: 3}
+  peasantPrefab: {fileID: 5248282671396679349, guid: 5344513e5cffc73479f476b5d49b78d8, type: 3}
   spawnInterval: 6
   maxEnemies: 4
   spawnPoints:

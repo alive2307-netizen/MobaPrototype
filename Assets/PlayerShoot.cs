@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // <-- Добавлено
+using UnityEngine.InputSystem;
 
 public class PlayerShoot : MonoBehaviour
 {
@@ -8,6 +8,8 @@ public class PlayerShoot : MonoBehaviour
     public float cooldown = 0.3f; 
     private float nextShotTime = 0f;
     private Camera mainCamera;
+    private bool isPenalized = false;
+    private float penaltyEndTime = 0f;
 
     void Start()
     {
@@ -16,10 +18,17 @@ public class PlayerShoot : MonoBehaviour
 
     void Update()
     {
-        // Безопасная проверка: если мыши нет, выходим
         if (Mouse.current == null) return;
 
-        // Стреляем по правой кнопке мыши (новый Input System)
+        // Проверяем, не закончился ли штраф
+        if (isPenalized && Time.time >= penaltyEndTime)
+        {
+            isPenalized = false;
+            Debug.Log("Штраф окончен. Можно стрелять!");
+        }
+
+        if (isPenalized) return; // Если штраф активен, не даем стрелять
+
         if (Mouse.current.rightButton.wasPressedThisFrame && Time.time >= nextShotTime)
         {
             Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -43,5 +52,13 @@ public class PlayerShoot : MonoBehaviour
             Destroy(proj, 2f);
             nextShotTime = Time.time + cooldown;
         }
+    }
+
+    // Метод для применения штрафа
+    public void ApplyPenalty(float penaltyDuration)
+    {
+        isPenalized = true;
+        penaltyEndTime = Time.time + penaltyDuration;
+        Debug.Log("Штраф! Вы не можете стрелять " + penaltyDuration + " секунд.");
     }
 }
