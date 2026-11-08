@@ -2,25 +2,32 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
-    public float damage = 10f;
+    public float damage = 5f;
     public float attackCooldown = 1f;
+    public float attackRange = 3f; 
     private float nextAttackTime = 0f;
+    private Transform playerBase;
 
-    void OnCollisionStay(Collision collision)
+    void Start()
     {
-        // Если враг столкнулся с нашей базой
-        if (collision.gameObject.name == "PlayerBase")
+        GameObject baseObj = GameObject.Find("PlayerBase");
+        if (baseObj != null) playerBase = baseObj.transform;
+    }
+
+    void Update()
+    {
+        if (playerBase == null) return;
+
+        float distance = Vector3.Distance(transform.position, playerBase.position);
+
+        if (distance <= attackRange && Time.time >= nextAttackTime)
         {
-            // Проверяем кулдаун атаки
-            if (Time.time >= nextAttackTime)
+            BaseHealth baseHealth = playerBase.GetComponent<BaseHealth>();
+            if (baseHealth != null)
             {
-                BaseHealth baseHealth = collision.gameObject.GetComponent<BaseHealth>();
-                if (baseHealth != null)
-                {
-                    baseHealth.TakeDamage(damage);
-                }
-                nextAttackTime = Time.time + attackCooldown;
+                baseHealth.TakeDamage(damage);
             }
+            nextAttackTime = Time.time + attackCooldown;
         }
     }
 }

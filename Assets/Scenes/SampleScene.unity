@@ -183,7 +183,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ce70339358b5d68459eca136935e0b37, type: 2}
+  - {fileID: 2100000, guid: c1473477ae0a3204f9e3fc1aa6f0b183, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1080,6 +1080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 5354917874039971454, guid: 78739ebf30502044f8e67dee25b1fd73, type: 3}
   shootForce: 1000
+  cooldown: 0.3
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1448,7 +1449,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4cc17d4557a88f849940d20c1890f49e, type: 2}
+  - {fileID: 2100000, guid: 568d1347007af79469346bdc960371e6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1920,6 +1921,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 5
   attackCooldown: 1
+  attackRange: 3
 --- !u!114 &1847245889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1960,7 +1962,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 4
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1

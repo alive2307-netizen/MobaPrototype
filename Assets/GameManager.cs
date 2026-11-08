@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    // Вот эта функция нам нужна
     public void RestartGame()
     {
         Time.timeScale = 1f; 
