@@ -2,7 +2,10 @@ using UnityEngine;
 
 public class BaseHealing : MonoBehaviour
 {
-    public float healRadius = 4f; 
+    public float healRadius = 4f;
+    public float healAmount = 10f; // Сколько лечит в секунду
+    public float healCooldown = 1f; // Как часто лечит
+    private float nextHealTime = 0f;
 
     void Update()
     {
@@ -12,9 +15,14 @@ public class BaseHealing : MonoBehaviour
         {
             float distance = Vector3.Distance(transform.position, player.transform.position);
             
-            if (distance <= healRadius)
+            if (distance <= healRadius && Time.time >= nextHealTime)
             {
-                Debug.Log("Игрок лечится у базы!");
+                PlayerHealth health = player.GetComponent<PlayerHealth>();
+                if (health != null)
+                {
+                    health.Heal(healAmount);
+                }
+                nextHealTime = Time.time + healCooldown;
             }
         }
     }

@@ -7,6 +7,7 @@ public class EnemyAttack : MonoBehaviour
     public float attackRange = 3f; 
     private float nextAttackTime = 0f;
     private Transform playerBase;
+    private Transform playerTarget;
 
     void Start()
     {
@@ -16,18 +17,36 @@ public class EnemyAttack : MonoBehaviour
 
     void Update()
     {
-        if (playerBase == null) return;
-
-        float distance = Vector3.Distance(transform.position, playerBase.position);
-
-        if (distance <= attackRange && Time.time >= nextAttackTime)
+        // Ищем игрока, если еще не нашли
+        if (playerTarget == null)
         {
-            BaseHealth baseHealth = playerBase.GetComponent<BaseHealth>();
-            if (baseHealth != null)
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null) playerTarget = p.transform;
+        }
+
+        // 1. Атака базы (если враг дошел до нее)
+        if (playerBase != null)
+        {
+            float distToBase = Vector3.Distance(transform.position, playerBase.position);
+            if (distToBase <= attackRange && Time.time >= nextAttackTime)
             {
-                baseHealth.TakeDamage(damage);
+                BaseHealth baseHealth = playerBase.GetComponent<BaseHealth>();
+                if (baseHealth != null) baseHealth.TakeDamage(damage);
+                nextAttackTime = Time.time + attackCooldown;
+                return; // Если бьем базу, не бьем игрока в этот кадр
             }
-            nextAttackTime = Time.time + attackCooldown;
+        }
+
+        // 2. Атака игрока (если игрок подошел близко к врагу)
+        if (playerTarget != null)
+        {
+            float distToPlayer = Vector3.Distance(transform.position, playerTarget.position);
+            if (distToPlayer <= attackRange && Time.time >= nextAttackTime)
+            {
+                PlayerHealth playerHealth = playerTarget.GetComponent<PlayerHealth>();
+                if (playerHealth != null) playerHealth.TakeDamage(damage);
+                nextAttackTime = Time.time + attackCooldown;
+            }
         }
     }
 }
