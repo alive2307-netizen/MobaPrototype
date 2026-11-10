@@ -4,7 +4,8 @@ public class EnemyAttack : MonoBehaviour
 {
     public float damage = 5f;
     public float attackCooldown = 1f;
-    public float attackRange = 3f; 
+    public float attackRange = 2.5f; // Радиус атаки (чуть меньше, чем радиус обнаружения)
+    
     private float nextAttackTime = 0f;
     private Transform playerBase;
     private Transform playerTarget;
@@ -17,35 +18,42 @@ public class EnemyAttack : MonoBehaviour
 
     void Update()
     {
-        // Ищем игрока, если еще не нашли
         if (playerTarget == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) playerTarget = p.transform;
         }
 
-        // 1. Атака базы (если враг дошел до нее)
-        if (playerBase != null)
-        {
-            float distToBase = Vector3.Distance(transform.position, playerBase.position);
-            if (distToBase <= attackRange && Time.time >= nextAttackTime)
-            {
-                BaseHealth baseHealth = playerBase.GetComponent<BaseHealth>();
-                if (baseHealth != null) baseHealth.TakeDamage(damage);
-                nextAttackTime = Time.time + attackCooldown;
-                return; // Если бьем базу, не бьем игрока в этот кадр
-            }
-        }
+        if (Time.time < nextAttackTime) return;
 
-        // 2. Атака игрока (если игрок подошел близко к врагу)
+        // 1. Приоритет — атака игрока, если он близко
         if (playerTarget != null)
         {
             float distToPlayer = Vector3.Distance(transform.position, playerTarget.position);
-            if (distToPlayer <= attackRange && Time.time >= nextAttackTime)
+            if (distToPlayer <= attackRange)
             {
                 PlayerHealth playerHealth = playerTarget.GetComponent<PlayerHealth>();
-                if (playerHealth != null) playerHealth.TakeDamage(damage);
-                nextAttackTime = Time.time + attackCooldown;
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(damage);
+                    nextAttackTime = Time.time + attackCooldown;
+                    return; // Выходим, чтобы не бить базу в этот же кадр
+                }
+            }
+        }
+
+        // 2. Если игрока нет рядом, бьем базу
+        if (playerBase != null)
+        {
+            float distToBase = Vector3.Distance(transform.position, playerBase.position);
+            if (distToBase <= attackRange)
+            {
+                BaseHealth baseHealth = playerBase.GetComponent<BaseHealth>();
+                if (baseHealth != null)
+                {
+                    baseHealth.TakeDamage(damage);
+                    nextAttackTime = Time.time + attackCooldown;
+                }
             }
         }
     }
